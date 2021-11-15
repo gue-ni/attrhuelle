@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Attributhülle</title>
+
+		<style>
+			body {
+				max-width: 600px;
+				margin: 0 auto;
+			}
+
+			.box {
+				margin: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Hülle einer Attributmenge</h1>
+		<p>Berechne die Attributhülle eines bestimmten Attributs aus einer Menge von funktionalen Abhängigkeiten F.</p>
+		<p>
+			<b>Eingabe: </b>
+            <ul>
+                <li>eine Menge an eine Menge funktionaler Abhängigkeiten <b>F</b></li>
+                <li>eine Menge von Attributen <b>a</b></li>
+            </ul>
+		</p>
+        <p>
+            <b>Ausgabe:</b>
+            <ul>
+                <li>
+                    die Menge an Attributen, die sich aus <b>a</b> durch die Abhängigkeiten <b>F</b> ableiten lässt.
+                </li>
+            </ul>
+        </p>
+
+		<div class="box">
+			<label for=""><b>F</b> = {<input type="text" id="F" value="RS->T,U->VX,RX->W,T->RU" size="60" />} </label>
+		</div>
+		<div class="box">
+			<label for="">AttrHülle(<b>F</b>, <b>a</b> = {<input type="text" size="5" id="gamma" value="RS" />})</label>
+			<span id="output"></span>
+		</div>
+		<div class="box">
+			<button id="compute">Compute</button>
+		</div>
+		<div class="box">
+			<span id="error" style="color: red"></span>
+		</div>
+		<small
+			>(c) 2021 <a href="https://jakobmaier.at" target="_blank" rel="noopener noreferrer">Jakob Maier</a></small
+		>
+		<script>
+			const input = document.querySelector("#F");
+			const gamma_input = document.querySelector("#gamma");
+			const output = document.querySelector("#output");
+			const compute = document.querySelector("#compute");
+			const error = document.querySelector("#error");
+
+			function AttrHuelle(FD, gamma) {
+				let gamma_plus = gamma;
+
+				let max_depth = 100;
+
+				const subset = (A, B) => {
+					for (let a of A) {
+						if (!B.includes(a)) {
+							return false;
+						}
+					}
+					return true;
+				};
+
+				let found_something_this_round;
+				while (FD.length > 0 && --max_depth > 0) {
+					found_something_this_round = false;
+
+					FD = FD.filter(({ alpha, beta }) => {
+						if (subset(alpha, gamma_plus) && !subset(beta, gamma_plus)) {
+							found_something_this_round = true;
+
+							//console.log({ alpha, beta });
+
+							gamma_plus = [...new Set([...gamma_plus, ...beta])];
+							return false;
+						} else {
+							return true;
+						}
+					});
+
+					//console.log({ FD, found_something_this_round, gamma_plus });
+					if (!found_something_this_round) break;
+				}
+
+				return gamma_plus.sort();
+			}
+
+			function clear_error() {
+				error.innerText = "";
+			}
+
+			function display_error(msg) {
+				error.innerText = msg;
+				setTimeout(() => {
+					clear_error();
+				}, 5000);
+			}
+
+			function clean_input(str) {
+				str = str.replace(/\s/g, "");
+				str = str.replace(/→/g, "->");
+				str = str.toUpperCase();
+				return str;
+			}
+
+			compute.addEventListener("click", () => {
+				if (!(gamma_input.value && input.value)) {
+					display_error("Fehler: Keine Eingabe");
+					return;
+				}
+
+				input.value = clean_input(input.value);
+				gamma_input.value = clean_input(gamma_input.value);
+
+				let FD = [...input.value.split(",")];
+				let gamma = [...gamma_input.value];
+
+				FD = FD.map((tuple) => {
+					try {
+						let tmp = tuple.split("->");
+						tmp = tmp.map((str) => str.trim());
+						return { alpha: [...tmp[0]], beta: [...tmp[1]] };
+					} catch (err) {
+						console.log(err);
+						display_error("Fehler: Eingabe nicht korrekt");
+						return;
+					}
+				});
+
+				let result = AttrHuelle(FD, gamma);
+				output.innerText = `= { ${result.join(", ")} }`;
+				clear_error();
+			});
+		</script>
+	</body>
+</html>
