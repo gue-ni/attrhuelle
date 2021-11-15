@@ -4,11 +4,15 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Attributhülle</title>
-
+		<title>Attributhülle Calculator</title>
 		<style>
+			* {
+				box-sizing: border-box;
+			}
+
 			body {
 				max-width: 600px;
+				padding: 1em;
 				margin: 0 auto;
 			}
 
@@ -19,28 +23,29 @@
 	</head>
 	<body>
 		<h1>Hülle einer Attributmenge</h1>
-		<p>Berechne die Attributhülle eines bestimmten Attributs aus einer Menge von funktionalen Abhängigkeiten F.</p>
+		<p>Berechne die Attributhülle eines bestimmten Attributs aus einer Menge von funktionalen Abhängigkeiten.</p>
 		<p>
 			<b>Eingabe: </b>
             <ul>
                 <li>eine Menge an eine Menge funktionaler Abhängigkeiten <b>F</b></li>
-                <li>eine Menge von Attributen <b>a</b></li>
+                <li>eine Menge von Attributen <b>&alpha;</b></li>
             </ul>
 		</p>
         <p>
             <b>Ausgabe:</b>
             <ul>
                 <li>
-                    die Menge an Attributen, die sich aus <b>a</b> durch die Abhängigkeiten <b>F</b> ableiten lässt.
+                    die Menge an Attributen, die sich aus <b>&alpha;</b> durch die Abhängigkeiten <b>F</b> ableiten lässt.
                 </li>
             </ul>
         </p>
 
+		<br>
 		<div class="box">
 			<label for=""><b>F</b> = {<input type="text" id="F" value="RS->T,U->VX,RX->W,T->RU" size="60" />} </label>
 		</div>
 		<div class="box">
-			<label for="">AttrHülle(<b>F</b>, <b>a</b> = {<input type="text" size="5" id="gamma" value="RS" />})</label>
+			<label for="">AttrHülle(<b>F</b>, <b>&alpha;</b> = {<input type="text" size="5" id="gamma" value="RS" />})</label>
 			<span id="output"></span>
 		</div>
 		<div class="box">
